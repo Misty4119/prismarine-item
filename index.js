@@ -11,7 +11,7 @@ function loader (registryOrVersion) {
   }
 
   function normalizeComponentFromNetwork (component) {
-    if (component.type === 'custom_name' && registry.supportFeature('customNameComponentIsPlainText') && component.data?.type === 'string') {
+    if (component.type === 'custom_name' && component.data?.type === 'string') {
       return { ...component, data: component.data.value }
     }
     if (!['enchantments', 'stored_enchantments'].includes(component.type) || Array.isArray(component.data)) return component

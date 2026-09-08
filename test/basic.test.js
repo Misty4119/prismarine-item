@@ -481,6 +481,17 @@ describe('componentMap getters (1.20.5+)', () => {
       expect(item.customName).toBe('{"text":"My Sword"}')
     })
 
+    it('unwraps an NBT string custom_name received from the server', () => {
+      const item = Item.fromNotch({
+        itemId: 830,
+        itemCount: 1,
+        components: [
+          { type: 'custom_name', data: { type: 'string', value: '{"text":"My Sword"}' } }
+        ]
+      })
+      expect(item.customName).toBe('{"text":"My Sword"}')
+    })
+
     it('falls back to null when componentMap has no custom_name and no nbt', () => {
       const item = Item.fromNotch({
         itemId: 830,
@@ -609,8 +620,8 @@ describe('componentMap setters (1.20.5+)', () => {
   })
 })
 
-describe('component serialization (26.2)', () => {
-  const registry = require('prismarine-registry')('26.2')
+describe('component serialization', () => {
+  const registry = require('prismarine-registry')('1.20.5')
   const Item = require('prismarine-item')(registry)
 
   it('round-trips regular and stored enchantment components', () => {
