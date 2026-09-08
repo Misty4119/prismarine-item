@@ -26,6 +26,9 @@ function loader (registryOrVersion) {
   }
 
   function componentToNetwork (component) {
+    if (component.type === 'custom_name' && typeof component.data === 'string') {
+      return { ...component, data: nbt.string(component.data) }
+    }
     if (!['enchantments', 'stored_enchantments'].includes(component.type) || !Array.isArray(component.data)) return component
     return {
       ...component,
@@ -133,7 +136,10 @@ function loader (registryOrVersion) {
         itemCount: item.count,
         components: item.components
           .filter(component => !hashedSlot.NOT_HASHED.has(component.type))
-          .map(component => ({ type: component.type, hash: hashedSlot.hashComponent(component.type, component.data) ?? 0 })),
+          .map(component => {
+            const networkComponent = componentToNetwork(component)
+            return { type: component.type, hash: hashedSlot.hashComponent(component.type, networkComponent.data) ?? 0 }
+          }),
         removeComponents: item.removedComponents
       }
     }
