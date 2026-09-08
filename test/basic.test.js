@@ -609,6 +609,40 @@ describe('componentMap setters (1.20.5+)', () => {
   })
 })
 
+describe('component serialization (26.2)', () => {
+  const registry = require('prismarine-registry')('26.2')
+  const Item = require('prismarine-item')(registry)
+
+  it('round-trips regular and stored enchantment components', () => {
+    const sword = new Item(registry.itemsByName.diamond_sword.id, 1)
+    sword.enchants = [{ name: 'sharpness', lvl: 5 }]
+
+    expect(sword.enchants).toStrictEqual([{ name: 'sharpness', lvl: 5 }])
+    expect(sword.componentMap.get('enchantments').data).toStrictEqual(sword.enchants)
+
+    const networkSword = Item.toNotch(sword)
+    expect(networkSword.components.find(component => component.type === 'enchantments').data).toStrictEqual({
+      enchantments: [{ id: registry.enchantmentsByName.sharpness.id, level: 5 }]
+    })
+
+    const book = new Item(registry.itemsByName.enchanted_book.id, 1)
+    book.enchants = [{ name: 'unbreaking', lvl: 3 }]
+    expect(book.enchants).toStrictEqual([{ name: 'unbreaking', lvl: 3 }])
+    expect(book.componentMap.has('stored_enchantments')).toBe(true)
+
+    const received = Item.fromNotch({
+      itemId: registry.itemsByName.diamond_sword.id,
+      itemCount: 1,
+      components: [{
+        type: 'enchantments',
+        data: { enchantments: [{ id: registry.enchantmentsByName.sharpness.id, level: 5 }] }
+      }],
+      removeComponents: []
+    })
+    expect(received.enchants).toStrictEqual([{ name: 'sharpness', lvl: 5 }])
+  })
+})
+
 describe('componentMap preferred over nbt (1.20.5+)', () => {
   const Item = require('prismarine-item')('1.20.5')
 

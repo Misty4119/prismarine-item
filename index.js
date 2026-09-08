@@ -2,6 +2,42 @@ const nbt = require('prismarine-nbt')
 
 function loader (registryOrVersion) {
   const registry = typeof registryOrVersion === 'string' ? require('prismarine-registry')(registryOrVersion) : registryOrVersion
+
+  function setComponent (item, type, data) {
+    const component = { type, data }
+    item.componentMap.set(type, component)
+    item.components = Array.from(item.componentMap.values())
+    item.removedComponents = item.removedComponents.filter(componentType => componentType !== type)
+  }
+
+  function normalizeComponentFromNetwork (component) {
+    if (component.type === 'custom_name' && registry.supportFeature('customNameComponentIsPlainText') && component.data?.type === 'string') {
+      return { ...component, data: component.data.value }
+    }
+    if (!['enchantments', 'stored_enchantments'].includes(component.type) || Array.isArray(component.data)) return component
+    if (!Array.isArray(component.data?.enchantments)) return component
+    return {
+      ...component,
+      data: component.data.enchantments.map(({ id, level }) => ({
+        name: registry.enchantments[id]?.name || null,
+        lvl: level
+      }))
+    }
+  }
+
+  function componentToNetwork (component) {
+    if (!['enchantments', 'stored_enchantments'].includes(component.type) || !Array.isArray(component.data)) return component
+    return {
+      ...component,
+      data: {
+        enchantments: component.data.map(({ id, level, name, lvl }) => ({
+          id: id ?? registry.enchantmentsByName[name].id,
+          level: level ?? lvl
+        }))
+      }
+    }
+  }
+
   class Item {
     constructor (type, count, metadata, nbt, stackId, sentByServer) {
       if (type == null) return
@@ -69,7 +105,11 @@ function loader (registryOrVersion) {
           item1.type === item2.type &&
           item1.metadata === item2.metadata &&
           (matchStackSize ? item1.count === item2.count : true) &&
-          (matchNbt ? JSON.stringify(item1.nbt) === JSON.stringify(item2.nbt) : true)
+          (matchNbt
+            ? JSON.stringify(item1.nbt) === JSON.stringify(item2.nbt) &&
+              JSON.stringify(item1.components) === JSON.stringify(item2.components) &&
+              JSON.stringify(item1.removedComponents) === JSON.stringify(item2.removedComponents)
+            : true)
         )
       }
     }
@@ -92,7 +132,7 @@ function loader (registryOrVersion) {
             itemId: item.type,
             addedComponentCount: item.components.length,
             removedComponentCount: item.removedComponents.length,
-            components: item.components,
+            components: item.components.map(componentToNetwork),
             removeComponents: item.removedComponents
           }
         } else if (registry.supportFeature('itemSerializationAllowsPresent')) {
@@ -152,8 +192,8 @@ function loader (registryOrVersion) {
         if (registry.supportFeature('itemsWithComponents')) { // 1.20.5+
           if (networkItem.itemCount === 0) return null
           const item = new Item(networkItem.itemId, networkItem.itemCount, null, null, true)
-          item.components = networkItem.components
-          item.removedComponents = networkItem.removeComponents
+          item.components = (networkItem.components || []).map(normalizeComponentFromNetwork)
+          item.removedComponents = networkItem.removeComponents || []
           item.componentMap = new Map() // Pf146
           if (item.components) {
             for (const component of item.components) {
@@ -199,7 +239,7 @@ function loader (registryOrVersion) {
 
     set customName (newName) {
       if (this.componentMap) {
-        this.componentMap.set('custom_name', { type: 'custom_name', data: newName })
+        setComponent(this, 'custom_name', newName)
         return
       }
       if (!this.nbt) this.nbt = nbt.comp({})
@@ -217,7 +257,7 @@ function loader (registryOrVersion) {
 
     set customLore (newLore) {
       if (this.componentMap) {
-        this.componentMap.set('lore', { type: 'lore', data: newLore })
+        setComponent(this, 'lore', newLore)
         return
       }
       if (!this.nbt) this.nbt = nbt.comp({})
@@ -238,7 +278,7 @@ function loader (registryOrVersion) {
 
     set repairCost (newRepairCost) {
       if (this.componentMap) {
-        this.componentMap.set('repair_cost', { type: 'repair_cost', data: newRepairCost })
+        setComponent(this, 'repair_cost', newRepairCost)
         return
       }
       if (!this?.nbt) this.nbt = nbt.comp({})
@@ -258,8 +298,9 @@ function loader (registryOrVersion) {
       const typeOfEnchantLevelValue = registry.supportFeature('typeOfValueForEnchantLevel')
       const useStoredEnchantments = registry.supportFeature('booksUseStoredEnchantments') && this.name === 'enchanted_book'
 
-      if (this.componentMap?.has('enchantments')) {
-        return this.componentMap.get('enchantments').data
+      const componentType = useStoredEnchantments ? 'stored_enchantments' : 'enchantments'
+      if (this.componentMap?.has(componentType)) {
+        return this.componentMap.get(componentType).data
       }
 
       if (typeOfEnchantLevelValue === 'short' && enchantNbtKey === 'ench') {
@@ -299,6 +340,12 @@ function loader (registryOrVersion) {
       if (!type) throw new Error("Don't know the serialized type for enchant level")
 
       const useStoredEnchants = this.name === 'enchanted_book' && registry.supportFeature('booksUseStoredEnchantments')
+
+      if (this.componentMap) {
+        const componentType = useStoredEnchants ? 'stored_enchantments' : 'enchantments'
+        setComponent(this, componentType, normalizedEnchArray)
+        return
+      }
 
       const enchs = normalizedEnchArray.map(({ name, lvl }) => {
         const value =
@@ -385,6 +432,10 @@ function loader (registryOrVersion) {
 
     set durabilityUsed (value) {
       const where = registry.supportFeature('whereDurabilityIsSerialized')
+      if (where === 'Damage' && this.componentMap) {
+        setComponent(this, 'damage', value)
+        return
+      }
       if (where === 'Damage') {
         if (!this?.nbt) this.nbt = nbt.comp({})
         this.nbt.value.Damage = nbt.int(value)
