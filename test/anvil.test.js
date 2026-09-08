@@ -345,3 +345,26 @@ describe('1.16.5 anvil', () => {
     })
   })
 })
+
+describe('1.20.5 component anvil', () => {
+  const registry = require('prismarine-registry')('1.20.5')
+  const Item = require('prismarine-item')(registry)
+
+  it('preserves unmodified components and removed components', () => {
+    const sword = Item.fromNotch({
+      itemId: registry.itemsByName.diamond_sword.id,
+      itemCount: 1,
+      components: [{ type: 'custom_model_data', data: 42 }],
+      removeComponents: ['unbreakable']
+    })
+
+    const result = Item.anvil(sword, null, false, 'Renamed')
+
+    expect(result.item.components).toStrictEqual([
+      { type: 'custom_model_data', data: 42 },
+      { type: 'custom_name', data: 'Renamed' },
+      { type: 'repair_cost', data: 1 }
+    ])
+    expect(result.item.removedComponents).toStrictEqual(['unbreakable'])
+  })
+})
