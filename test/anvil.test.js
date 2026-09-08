@@ -350,6 +350,17 @@ describe('1.20.5 component anvil', () => {
   const registry = require('prismarine-registry')('1.20.5')
   const Item = require('prismarine-item')(registry)
 
+  it('allows durability enchantments on breakable items', () => {
+    const sword = new Item(registry.itemsByName.diamond_sword.id, 1)
+    const book = new Item(registry.itemsByName.enchanted_book.id, 1)
+    book.enchants = [{ name: 'unbreaking', lvl: 3 }]
+
+    const result = Item.anvil(sword, book, false)
+
+    expect(result.xpCost).toStrictEqual(3)
+    expect(result.item.enchants).toStrictEqual([{ name: 'unbreaking', lvl: 3 }])
+  })
+
   it('preserves unmodified components and removed components', () => {
     const sword = Item.fromNotch({
       itemId: registry.itemsByName.diamond_sword.id,
