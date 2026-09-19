@@ -4,6 +4,16 @@
 
 Represent a minecraft item with its associated data
 
+## Installation, support, and repository guides
+
+Install the published package with npm install prismarine-item. The Java 26.2 and 26.3 component work in this source tree is newer than the current published package; use the sibling checkout described in CONTEXT.md when reproducing it.
+
+- [Agent instructions](AGENTS.md)
+- [Repository context](CONTEXT.md)
+- [Security policy](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+
+For development, run npm install, npm run lint, npm run test:types, and npm test from the repository root. The package does not declare a Node.js engine requirement. Keep index.d.ts synchronized with index.js.
 ## Usage
 
 ```js
