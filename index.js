@@ -7,7 +7,7 @@ function loader (registryOrVersion) {
     const component = { type, data }
     item.componentMap.set(type, component)
     item.components = Array.from(item.componentMap.values())
-    item.removedComponents = item.removedComponents.filter(componentType => componentType !== type)
+    item.removedComponents = item.removedComponents.filter(component => (typeof component === 'string' ? component : component.type) !== type)
   }
 
   function normalizeComponentFromNetwork (component) {

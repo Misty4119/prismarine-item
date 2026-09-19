@@ -597,6 +597,20 @@ describe('componentMap setters (1.20.5+)', () => {
   const Item = require('prismarine-item')('1.20.5')
   const registry = require('prismarine-registry')('1.20.5')
 
+  it('removes a component from removedComponents when setting it again', () => {
+    const item = Item.fromNotch({
+      itemId: registry.itemsByName.diamond_sword.id,
+      itemCount: 1,
+      components: [],
+      removeComponents: [{ type: 'custom_name' }]
+    })
+
+    item.customName = 'restored name'
+
+    expect(item.removedComponents).toStrictEqual([])
+    expect(Item.toNotch(item).removeComponents).toStrictEqual([])
+  })
+
   it('customName setter writes to componentMap when it exists', () => {
     const item = new Item(registry.itemsByName.diamond_sword.id, 1)
     item.customName = '{"text":"Cool Sword"}'

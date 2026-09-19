@@ -5,7 +5,8 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "mocha --reporter spec --exit",
+    "test": "npm run test:types && mocha --reporter spec --exit",
+    "test:types": "tsc --noEmit --strict --skipLibCheck --target ES2020 --module commonjs --moduleResolution node test/types/item-components.ts",
     "pretest": "npm run lint",
     "fix": "standard --fix",
     "lint": "standard"
@@ -19,7 +20,8 @@
     "expect": "^29.1.2",
     "mocha": "^11.0.1",
     "prismarine-item": "file:.",
-    "standard": "^17.0.0"
+    "standard": "^17.0.0",
+    "typescript": "^5.9.3"
   },
   "keywords": [
     "minecraft",

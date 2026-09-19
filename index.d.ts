@@ -4,6 +4,15 @@ import { Tags, TagType } from 'prismarine-nbt'
 
 export type ItemLike = Item | null
 
+export interface ItemComponent<TData = unknown> {
+  type: string;
+  data: TData;
+}
+
+export interface RemovedItemComponent {
+  type: string;
+}
+
 export class Item {
   constructor(type: number, count: number, metadata?: number, nbt?: object, stackId?: number, sentByServer?: boolean);
   type: number;
@@ -16,6 +25,9 @@ export class Item {
   displayName: string;
   stackSize: number;
   maxDurability: number;
+  components?: ItemComponent[];
+  removedComponents?: RemovedItemComponent[];
+  componentMap?: Map<string, ItemComponent>;
   durabilityUsed: number;
   get enchants(): { name: string; lvl: number }[];
   set enchants(enchantments: { name: string; lvl: number }[]);
