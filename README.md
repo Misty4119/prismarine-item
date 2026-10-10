@@ -1,6 +1,6 @@
 # prismarine-item
-[![NPM version](https://img.shields.io/npm/v/prismarine-item.svg)](http://npmjs.com/package/prismarine-item)
-[![Build Status](https://github.com/PrismarineJS/prismarine-item/workflows/CI/badge.svg)](https://github.com/PrismarineJS/prismarine-item/actions?query=workflow%3A%22CI%22)
+[![NPM version](https://img.shields.io/npm/v/prismarine-item.svg)](https://www.npmjs.com/package/prismarine-item)
+[![Build Status](https://github.com/Misty4119/prismarine-item/actions/workflows/ci.yml/badge.svg)](https://github.com/Misty4119/prismarine-item/actions/workflows/ci.yml)
 
 Represent a minecraft item with its associated data
 
@@ -11,6 +11,7 @@ Install the published package with npm install prismarine-item. The Java 26.2 an
 - [Agent instructions](AGENTS.md)
 - [Repository context](CONTEXT.md)
 - [Security policy](SECURITY.md)
+- [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 
 For development, run npm install, npm run lint, npm run test:types, and npm test from the repository root. The package does not declare a Node.js engine requirement. Keep index.d.ts synchronized with index.js.
@@ -46,6 +47,8 @@ Take an `Item` instance and return it as the `HashedSlot` that 1.21.5+ `window_c
 
 Hashes are taken over each component's codec form (the shape a data pack writes), described as protodef types in `lib/hashedSlot.json` on top of the `hash` datatype; `lib/hashedSlot.js` maps the network form onto it. Components whose hash can't be reproduced are sent with hash 0, which makes the server resend that slot after the click.
 
+Java 26.3 (protocol 777) also uses codec families in `lib/hashedSlot/families/` for records, combat, consumption, predicates, registry holders, nested items, and variants. The registry is classified as 119 hashable component types and three exclusions (`creative_slot_lock`, `map_post_processing`, `additional_trade_cost`), which are omitted from the hashed component list. Classification checks codec coverage; it does not imply every payload has an independently verified Vanilla hash. Malformed or unresolved payloads retain the zero-hash fallback. The protocol 777 families are enabled only for Java 26.3; older version codecs remain available.
+
 #### Item.fromNotch(item[, stackId])
 
 Take an `item` in the format of the minecraft packets and return an `Item` instance.
@@ -76,7 +79,7 @@ Numerical id.
 #### item.metadata
 
 Number which represents different things depending on the item.
-See http://www.minecraftwiki.net/wiki/Data_values#Data
+See https://minecraft.wiki/w/Java_Edition_data_values
 
 #### item.nbt
 
@@ -130,7 +133,7 @@ In adventure mode, the list of block names (as strings) that this Item can be us
 #### item.repairCost
 
 A getter/setter for abstracting the underlying nbt.
-See https://minecraft.gamepedia.com/Anvil_mechanics#Anvil_Uses
+See https://minecraft.wiki/w/Anvil_mechanics#Anvil_uses
 
 #### item.spawnEggMobName
 
