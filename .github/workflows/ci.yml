@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
 
@@ -16,10 +19,49 @@ jobs:
         node-version: [24.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - run: npm test
+    - run: npm run lint
+    - name: Check out node-minecraft-data runtime
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        repository: PrismarineJS/node-minecraft-data
+        ref: 308134a8020139d49ceb851c97713ae15b745192
+        submodules: recursive
+        path: node-mcdata
+    - name: Replace the runtime data submodule with the merged 26.3 data
+      run: rm -rf node-mcdata/minecraft-data
+    - name: Check out T01 minecraft-data merge
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        repository: Misty4119/minecraft-data
+        ref: 1d37505b338710f2f347aa00efaa48a054754b19
+        path: node-mcdata/minecraft-data
+    - name: Prepare exact minecraft-data runtime
+      run: |
+        npm install
+        npm run prepare
+      working-directory: node-mcdata
+    - name: Install exact minecraft-data runtime
+      run: npm install --no-save --package-lock=false ./node-mcdata
+    - name: Verify protocol 777 runtime provenance
+      run: |
+        node - <<'NODE'
+        const assert = require('node:assert/strict')
+        const path = require('node:path')
+        const registry = require('prismarine-registry')('26.3')
+        const resolved = require.resolve('minecraft-data', { paths: [require.resolve('prismarine-registry')] })
+        assert.equal(require('node:fs').realpathSync(path.dirname(resolved)), require('node:fs').realpathSync('node-mcdata'))
+        assert.equal(registry.version.version, 777)
+        assert.equal(registry.version.dataVersion, 5023)
+        console.log({ resolved, version: registry.version.minecraftVersion, protocol: registry.version.version, dataVersion: registry.version.dataVersion })
+        NODE
+    - name: Run component and hash regressions
+      run: npx mocha --reporter spec --exit --grep 'component|HashedSlot|HashOps|hashed'
+    - run: npm run test:types
+    - name: Run full Mocha suite
+      run: npx mocha --reporter spec --exit

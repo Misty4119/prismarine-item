@@ -668,6 +668,67 @@ describe('component serialization', () => {
   })
 })
 
+describe('26.3 protocol 777 component serialization', () => {
+  const registry = require('prismarine-registry')('26.3')
+  const Item = require('prismarine-item')(registry)
+  const nbt = require('prismarine-nbt')
+
+  it('converts custom names and enchantments between network and item components', () => {
+    expect(registry.version).toMatchObject({ majorVersion: '26.3', version: 777 })
+
+    const itemId = registry.itemsByName.diamond_sword.id
+    const sharpnessId = registry.enchantmentsByName.sharpness.id
+    const customName = '{"text":"26.3 sword"}'
+    const removedComponents = [{ type: 'lore' }]
+    const item = Item.fromNotch({
+      itemId,
+      itemCount: 1,
+      components: [
+        { type: 'custom_name', data: nbt.string(customName) },
+        { type: 'enchantments', data: { enchantments: [{ id: sharpnessId, level: 5 }] } }
+      ],
+      removeComponents: removedComponents
+    })
+
+    expect(item.components).toStrictEqual([
+      { type: 'custom_name', data: customName },
+      { type: 'enchantments', data: [{ name: 'sharpness', lvl: 5 }] }
+    ])
+    expect(item.componentMap.get('custom_name')).toStrictEqual({ type: 'custom_name', data: customName })
+    expect(item.componentMap.get('enchantments')).toStrictEqual({ type: 'enchantments', data: [{ name: 'sharpness', lvl: 5 }] })
+    expect(Item.toNotch(item)).toStrictEqual({
+      present: true,
+      itemCount: 1,
+      itemId,
+      addedComponentCount: 2,
+      removedComponentCount: 1,
+      components: [
+        { type: 'custom_name', data: nbt.string(customName) },
+        { type: 'enchantments', data: { enchantments: [{ id: sharpnessId, level: 5 }] } }
+      ],
+      removeComponents: removedComponents
+    })
+  })
+
+  it('clears a removed component when a setter adds it back', () => {
+    const item = Item.fromNotch({
+      itemId: registry.itemsByName.diamond_sword.id,
+      itemCount: 1,
+      components: [],
+      removeComponents: [{ type: 'custom_name' }]
+    })
+
+    item.customName = '{"text":"restored in 26.3"}'
+
+    expect(item.removedComponents).toStrictEqual([])
+    expect(item.componentMap.get('custom_name')).toStrictEqual({ type: 'custom_name', data: '{"text":"restored in 26.3"}' })
+    expect(Item.toNotch(item).components).toStrictEqual([
+      { type: 'custom_name', data: nbt.string('{"text":"restored in 26.3"}') }
+    ])
+    expect(Item.toNotch(item).removeComponents).toStrictEqual([])
+  })
+})
+
 describe('componentMap preferred over nbt (1.20.5+)', () => {
   const Item = require('prismarine-item')('1.20.5')
 

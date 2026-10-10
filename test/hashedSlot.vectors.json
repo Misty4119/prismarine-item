@@ -728,7 +728,7 @@
    }
   }
  ],
- "1.21.11": [
+  "1.21.11": [
   {
    "give": "diamond_sword[enchantments={sharpness:5,unbreaking:3},damage=10,repair_cost=3]",
    "components": [
@@ -1665,6 +1665,93 @@
    "hashes": {
     "lock": -982207288
    }
+  }
+ ],
+ "26.3": [
+  {
+   "give": "minecraft:white_cushion[minecraft:cushion/color=blue]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test passed after a full authoritative window sync following each click. Verified cursor, source slot, destination slot, and component data. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [
+    {
+     "type": "cushion/color",
+     "data": "blue"
+    }
+   ],
+   "hashes": {
+    "cushion/color": 199633461
+   }
+  },
+  {
+   "give": "stone[attack_animation={type:\"whack\",duration:1}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "attack_animation", "data": { "type": "whack", "duration": 1 } }],
+   "hashes": { "attack_animation": 38245613 }
+  },
+  {
+   "give": "stone[interact_animation={type:\"stab\",duration:2}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "interact_animation", "data": { "type": "stab", "duration": 2 } }],
+   "hashes": { "interact_animation": 941234370 }
+  },
+  {
+   "give": "iron_axe[block_transformer=hoe]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "block_transformer", "data": 1 }],
+   "hashes": { "block_transformer": 217335778 }
+  },
+  {
+   "give": "stone[villager_food={nutrition:1}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "villager_food", "data": 1 }],
+   "hashes": { "villager_food": -326140849 }
+  },
+  {
+   "give": "stone[compostable={layers:1}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "compostable", "data": { "isConstant": true, "value": 1 } }],
+   "hashes": { "compostable": 1290316976 }
+  },
+  {
+   "give": "stone[cooking_fuel={burn_time:200,speed_multiplier:1.0f}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "cooking_fuel", "data": { "burnTime": { "isConstant": true, "value": 200 }, "speedMultiplier": { "isConstant": true, "value": 1 } } }],
+   "hashes": { "cooking_fuel": -700345918 }
+  },
+  {
+   "give": "stone[brewing_fuel={uses:1,speed_multiplier:1.0f}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "brewing_fuel", "data": { "uses": { "isConstant": true, "value": 1 }, "speedMultiplier": { "isConstant": true, "value": 1 } } }],
+   "hashes": { "brewing_fuel": -1885970260 }
+  },
+  {
+   "give": "zombie_spawn_egg[mob_visibility={targeting_entity_types:[\"minecraft:zombie\"],visibility:10.0f}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "mob_visibility", "data": { "targetingEntityTypes": { "ids": [154] }, "visibility": 10 } }],
+   "hashes": { "mob_visibility": -1013627476 }
+  },
+  {
+   "give": "stone[provides_pottery_pattern=angler]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "provides_pottery_pattern", "data": 0 }],
+   "hashes": { "provides_pottery_pattern": 920506421 }
+  },
+  {
+   "give": "oak_sign[sign_text_front={messages:[\"front one\",\"front two\",\"front three\",\"front four\"],color:\"white\",has_glowing_text:true}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "sign_text_front", "data": { "messages": [{ "type": "string", "value": "front one" }, { "type": "string", "value": "front two" }, { "type": "string", "value": "front three" }, { "type": "string", "value": "front four" }], "color": "white", "hasGlowingText": true } }],
+   "hashes": { "sign_text_front": 1016378249 }
+  },
+  {
+   "give": "oak_sign[sign_text_back={messages:[\"back one\",\"back two\",\"back three\",\"back four\"],color:\"white\",has_glowing_text:true}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "sign_text_back", "data": { "messages": [{ "type": "string", "value": "back one" }, { "type": "string", "value": "back two" }, { "type": "string", "value": "back three" }, { "type": "string", "value": "back four" }], "color": "white", "hasGlowingText": true } }],
+   "hashes": { "sign_text_back": 425765776 }
+  },
+  {
+   "give": "waxed_copper_block[waxed={}]",
+   "source": "Official Mojang 26.3 server; Mineflayer external playerInventory test asserts the exact parsed value, rejects an incorrect component hash, and accepts this hash after authoritative window sync. Server jar SHA-256: D052F14D7A173734FBA553711E5B570162E2F2A313267EE31A21B975A679BE64.",
+   "components": [{ "type": "waxed" }],
+   "hashes": { "waxed": -982207288 }
   }
  ]
 }
