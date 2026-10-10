@@ -93,6 +93,30 @@ describe('protocol 777 consumption component codecs', () => {
     assert.strictEqual(consumption.potionKey(999999, helpers), undefined)
   })
 
+  it('preserves custom effect namespaces returned by the live registry', () => {
+    const customRegistry = {
+      ...registry,
+      loginPacket: {
+        ...registry.loginPacket,
+        dimensionCodec: {
+          ...registry.loginPacket.dimensionCodec,
+          'minecraft:mob_effect': { entries: [{ key: 'mod:effect' }] }
+        }
+      }
+    }
+    const customHelpers = createHelpers(customRegistry)
+    const data = { effects: [{ effect: 0, duration: 160 }] }
+    assert.deepStrictEqual(consumption.converters.suspicious_stew_effects(data, customHelpers), [{ id: 'mod:effect' }])
+    assert.deepStrictEqual(consumption.normalizeConsumeEffect({ type: 'remove_effects', effects: { ids: [0] } }, customHelpers), {
+      type: 'minecraft:remove_effects', effects: 'mod:effect'
+    })
+    assert.deepStrictEqual(consumption.normalizeConsumeEffect({ type: 'remove_effects', effects: { name: 'mod:effects' } }, customHelpers), {
+      type: 'minecraft:remove_effects', effects: '#mod:effects'
+    })
+    const expected = hashedSlot.hash([{ id: 'mod:effect' }], ['list', ['map', { id: 'string' }]])
+    assert.strictEqual(hashedSlot(customRegistry).hashComponent('suspicious_stew_effects', data), expected)
+  })
+
   it('omits the optional empty death effect list', () => {
     assert.deepStrictEqual(consumption.converters.death_protection({ deathEffects: [] }, helpers), {})
     assert.strictEqual(consumption.converters.death_protection({}, helpers), undefined)

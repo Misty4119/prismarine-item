@@ -243,6 +243,35 @@ describe('hashed slot', () => {
     expect(() => Item.toHashedNotch(null)).toThrow()
   })
 
+  for (const version of ['1.21.9', '26.1']) {
+    it(`preserves legacy codec classification and resolvable profile fallback on ${version}`, () => {
+      const registry = require('prismarine-registry')(version)
+      const Item = require('prismarine-item')(registry)
+      const { hashComponent, hashedTypes } = hashedSlot(registry)
+      expect(hashedTypes).toHaveLength(50)
+      for (const type of Object.keys(require('../lib/hashedSlot.json').protocol777Components).filter(type => type !== 'profile')) {
+        expect(hashedTypes).not.toContain(type)
+        expect(hashComponent(type, {})).toBeUndefined()
+      }
+      const data = { type: 'partial', partial: { name: 'example', properties: [] }, skinPatch: { body: 'test:skin' } }
+      expect(hashComponent('profile', data)).toBeUndefined()
+      expect(hashComponent('profile', { type: 'complete', complete: { name: 'example', properties: [] } })).toBeUndefined()
+      const item = new Item(registry.itemsByName.player_head.id, 1)
+      item.components = [{ type: 'profile', data }]
+      expect(Item.toHashedNotch(item).components).toStrictEqual([{ type: 'profile', hash: 0 }])
+      expect(hashComponent('profile', { name: 'example', properties: [] }))
+        .toBe(hash({ name: 'example' }, ['map', { name: 'string' }]))
+    })
+  }
+
+  it('hashes resolvable profile skin patches only on protocol 777', () => {
+    const { hashComponent } = hashedSlot(require('prismarine-registry')('26.3'))
+    const data = { type: 'partial', partial: { name: 'example', properties: [] }, skinPatch: { body: 'test:skin' } }
+    expect(hashComponent('profile', data)).toBe(hash({ name: 'example', texture: 'test:skin' }, ['map', { name: 'string', texture: 'string' }]))
+    expect(hashComponent('profile', { type: 'complete', complete: { name: 'example', properties: [] } }))
+      .toBe(hash({ name: 'example' }, ['map', { name: 'string' }]))
+  })
+
   for (const version of ['1.21.5', '26.3']) {
     it(`keeps malformed network converter inputs recoverable on ${version}`, () => {
       const registry = require('prismarine-registry')(version)

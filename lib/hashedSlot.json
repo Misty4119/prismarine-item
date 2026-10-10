@@ -34,31 +34,13 @@
     "repair_cost": "int",
     "dyed_color": "int",
     "map_color": "int",
-    "cushion/color": "string",
-    "block_transformer": "string",
-    "brewing_fuel": ["map", { "uses": "resolvable_int", "speed_multiplier": "resolvable_float" }],
-    "cooking_fuel": ["map", { "burn_time": "resolvable_int", "speed_multiplier": "resolvable_float" }],
-    "compostable": ["map", { "layers": "resolvable_int" }],
     "map_id": "int",
     "ominous_bottle_amplifier": "int",
     "unbreakable": ["map", {}],
     "glider": ["map", {}],
     "intangible_projectile": ["map", {}],
-    "attack_animation": ["map", {
-      "type": { "type": "string", "default": "whack" },
-      "duration": { "type": "int", "default": 6 }
-    }],
-    "interact_animation": ["map", {
-      "type": { "type": "string", "default": "whack" },
-      "duration": { "type": "int", "default": 6 }
-    }],
-    "mob_visibility": ["map", {
-      "targeting_entity_types": ["list", "string"],
-      "visibility": "float"
-    }],
     "enchantment_glint_override": "boolean",
     "potion_duration_scale": "float",
-    "provides_pottery_pattern": "string",
     "minimum_attack_charge": "float",
     "item_model": "string",
     "tooltip_style": "string",
@@ -66,18 +48,6 @@
     "rarity": "string",
     "custom_name": "text",
     "item_name": "text",
-    "sign_text_front": ["map", {
-      "messages": ["list", "text"],
-      "filtered_messages": { "type": ["list", "text"], "optional": true },
-      "color": "string",
-      "has_glowing_text": { "type": "boolean", "default": false }
-    }],
-    "sign_text_back": ["map", {
-      "messages": ["list", "text"],
-      "filtered_messages": { "type": ["list", "text"], "optional": true },
-      "color": "string",
-      "has_glowing_text": { "type": "boolean", "default": false }
-    }],
     "lore": ["list", "text"],
     "enchantments": ["dict", "int"],
     "stored_enchantments": ["dict", "int"],
@@ -120,14 +90,157 @@
     "profile": ["map", {
       "name": { "type": "string", "optional": true },
       "id": { "type": "int_array", "optional": true },
-      "properties": { "type": ["list", "profile_property"], "default": [] },
-      "texture": { "type": "string", "optional": true },
-      "cape": { "type": "string", "optional": true },
-      "elytra": { "type": "string", "optional": true },
-      "model": { "type": "string", "optional": true }
+      "properties": { "type": ["list", "profile_property"], "default": [] }
     }],
-    "villager_food": ["map", { "nutrition": "int" }],
-    "waxed": ["map", {}],
     "attribute_modifiers": ["list", "attribute_modifier"]
+  },
+  "protocol777Components": {
+    "cushion/color": "string",
+    "block_transformer": "string",
+    "brewing_fuel": [
+      "map",
+      {
+        "uses": "resolvable_int",
+        "speed_multiplier": "resolvable_float"
+      }
+    ],
+    "cooking_fuel": [
+      "map",
+      {
+        "burn_time": "resolvable_int",
+        "speed_multiplier": "resolvable_float"
+      }
+    ],
+    "compostable": [
+      "map",
+      {
+        "layers": "resolvable_int"
+      }
+    ],
+    "attack_animation": [
+      "map",
+      {
+        "type": {
+          "type": "string",
+          "default": "whack"
+        },
+        "duration": {
+          "type": "int",
+          "default": 6
+        }
+      }
+    ],
+    "interact_animation": [
+      "map",
+      {
+        "type": {
+          "type": "string",
+          "default": "whack"
+        },
+        "duration": {
+          "type": "int",
+          "default": 6
+        }
+      }
+    ],
+    "mob_visibility": [
+      "map",
+      {
+        "targeting_entity_types": [
+          "list",
+          "string"
+        ],
+        "visibility": "float"
+      }
+    ],
+    "provides_pottery_pattern": "string",
+    "sign_text_front": [
+      "map",
+      {
+        "messages": [
+          "list",
+          "text"
+        ],
+        "filtered_messages": {
+          "type": [
+            "list",
+            "text"
+          ],
+          "optional": true
+        },
+        "color": "string",
+        "has_glowing_text": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    ],
+    "sign_text_back": [
+      "map",
+      {
+        "messages": [
+          "list",
+          "text"
+        ],
+        "filtered_messages": {
+          "type": [
+            "list",
+            "text"
+          ],
+          "optional": true
+        },
+        "color": "string",
+        "has_glowing_text": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    ],
+    "profile": [
+      "map",
+      {
+        "name": {
+          "type": "string",
+          "optional": true
+        },
+        "id": {
+          "type": "int_array",
+          "optional": true
+        },
+        "properties": {
+          "type": [
+            "list",
+            "profile_property"
+          ],
+          "default": []
+        },
+        "texture": {
+          "type": "string",
+          "optional": true
+        },
+        "cape": {
+          "type": "string",
+          "optional": true
+        },
+        "elytra": {
+          "type": "string",
+          "optional": true
+        },
+        "model": {
+          "type": "string",
+          "optional": true
+        }
+      }
+    ],
+    "villager_food": [
+      "map",
+      {
+        "nutrition": "int"
+      }
+    ],
+    "waxed": [
+      "map",
+      {}
+    ]
   }
 }

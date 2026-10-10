@@ -134,7 +134,8 @@ describe('protocol 777 predicate hashed component family', () => {
 
     const names = ['records', 'combat', 'consumption', 'predicates', 'registries', 'nested_items', 'variants']
     const codecTypes = {}
-    const componentShapes = { ...require('../lib/hashedSlot.json').components }
+    const shapes = require('../lib/hashedSlot.json')
+    const componentShapes = { ...shapes.components, ...shapes.protocol777Components }
     for (const name of names) {
       const codecFamily = require(`../lib/hashedSlot/families/${name}`)
       Object.assign(codecTypes, codecFamily.types)
